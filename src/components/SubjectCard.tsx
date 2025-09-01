@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ArrowRight, Clock, Award, BookOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface SubjectCardProps {
   subject: {
@@ -21,6 +22,7 @@ interface SubjectCardProps {
 }
 
 const SubjectCard = ({ subject }: SubjectCardProps) => {
+  const navigate = useNavigate();
   const progressPercentage = (subject.completedLessons / subject.totalLessons) * 100;
   
   const difficultyColors = {
@@ -29,8 +31,15 @@ const SubjectCard = ({ subject }: SubjectCardProps) => {
     'Advanced': 'bg-destructive/10 text-destructive'
   };
 
+  const handleCardClick = () => {
+    navigate(`/subject/${subject.id}`);
+  };
+
   return (
-    <Card className="group relative overflow-hidden hover:shadow-card-hover transition-all duration-300 cursor-pointer">
+    <Card 
+      className="group relative overflow-hidden hover:shadow-card-hover transition-all duration-300 cursor-pointer"
+      onClick={handleCardClick}
+    >
       <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity">
         <img 
           src={subject.backgroundImage} 
@@ -90,6 +99,10 @@ const SubjectCard = ({ subject }: SubjectCardProps) => {
         <Button 
           className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
           variant="ghost"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleCardClick();
+          }}
         >
           {subject.completedLessons > 0 ? 'Continue Learning' : 'Start Learning'}
           <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />

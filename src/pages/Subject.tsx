@@ -1,0 +1,204 @@
+import { useParams, useNavigate } from "react-router-dom";
+import { ArrowLeft, Play, Lock, CheckCircle, Clock, Award } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import Header from "@/components/Header";
+
+const Subject = () => {
+  const { subjectId } = useParams();
+  const navigate = useNavigate();
+
+  const subjectData = {
+    science: {
+      name: "Science",
+      description: "Physics, Chemistry, Biology & more",
+      color: "hsl(213 94% 68%)",
+      totalLessons: 45,
+      completedLessons: 23,
+      lessons: [
+        { id: 1, title: "Introduction to Physics", duration: "15 min", completed: true, locked: false },
+        { id: 2, title: "Newton's Laws of Motion", duration: "20 min", completed: true, locked: false },
+        { id: 3, title: "Energy and Work", duration: "18 min", completed: true, locked: false },
+        { id: 4, title: "Waves and Sound", duration: "22 min", completed: false, locked: false },
+        { id: 5, title: "Light and Optics", duration: "25 min", completed: false, locked: false },
+        { id: 6, title: "Electricity Basics", duration: "20 min", completed: false, locked: true },
+      ]
+    },
+    mathematics: {
+      name: "Mathematics", 
+      description: "Algebra, Geometry, Calculus & Statistics",
+      color: "hsl(25 95% 53%)",
+      totalLessons: 52,
+      completedLessons: 31,
+      lessons: [
+        { id: 1, title: "Algebra Fundamentals", duration: "18 min", completed: true, locked: false },
+        { id: 2, title: "Linear Equations", duration: "22 min", completed: true, locked: false },
+        { id: 3, title: "Quadratic Functions", duration: "25 min", completed: true, locked: false },
+        { id: 4, title: "Geometry Basics", duration: "20 min", completed: false, locked: false },
+        { id: 5, title: "Trigonometry", duration: "28 min", completed: false, locked: false },
+        { id: 6, title: "Calculus Introduction", duration: "30 min", completed: false, locked: true },
+      ]
+    },
+    technology: {
+      name: "Technology",
+      description: "Programming, AI, Robotics & Digital Skills", 
+      color: "hsl(158 64% 52%)",
+      totalLessons: 38,
+      completedLessons: 12,
+      lessons: [
+        { id: 1, title: "What is Programming?", duration: "12 min", completed: true, locked: false },
+        { id: 2, title: "HTML & CSS Basics", duration: "25 min", completed: true, locked: false },
+        { id: 3, title: "JavaScript Fundamentals", duration: "30 min", completed: false, locked: false },
+        { id: 4, title: "Building Your First Website", duration: "35 min", completed: false, locked: false },
+        { id: 5, title: "Introduction to AI", duration: "20 min", completed: false, locked: true },
+        { id: 6, title: "Robotics Basics", duration: "28 min", completed: false, locked: true },
+      ]
+    }
+  };
+
+  const subject = subjectData[subjectId as keyof typeof subjectData];
+  
+  if (!subject) {
+    return <div>Subject not found</div>;
+  }
+
+  const progressPercentage = (subject.completedLessons / subject.totalLessons) * 100;
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <main className="container py-8">
+        <div className="space-y-6">
+          {/* Back Button & Header */}
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate('/')}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          </div>
+
+          {/* Subject Header */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <div 
+                className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-2xl"
+                style={{ background: subject.color }}
+              >
+                📚
+              </div>
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold">{subject.name}</h1>
+                <p className="text-muted-foreground">{subject.description}</p>
+              </div>
+            </div>
+
+            {/* Progress */}
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Course Progress</span>
+                    <span className="text-sm text-muted-foreground">
+                      {subject.completedLessons}/{subject.totalLessons} lessons completed
+                    </span>
+                  </div>
+                  <Progress value={progressPercentage} className="h-3" />
+                  <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      <span>~{Math.round(subject.totalLessons * 20 / 60)} hours total</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Award className="h-4 w-4" />
+                      <span>{subject.completedLessons * 10} points earned</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Lessons */}
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">Lessons</h2>
+            <div className="grid gap-4">
+              {subject.lessons.map((lesson) => (
+                <Card 
+                  key={lesson.id} 
+                  className={`transition-all duration-200 ${
+                    lesson.locked 
+                      ? 'opacity-60 cursor-not-allowed' 
+                      : 'hover:shadow-md cursor-pointer'
+                  }`}
+                  onClick={() => {
+                    if (!lesson.locked) {
+                      navigate(`/lesson/${subjectId}/${lesson.id}`);
+                    }
+                  }}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                          lesson.completed 
+                            ? 'bg-success/10 text-success' 
+                            : lesson.locked 
+                              ? 'bg-muted text-muted-foreground'
+                              : 'bg-primary/10 text-primary'
+                        }`}>
+                          {lesson.completed ? (
+                            <CheckCircle className="h-6 w-6" />
+                          ) : lesson.locked ? (
+                            <Lock className="h-6 w-6" />
+                          ) : (
+                            <Play className="h-6 w-6" />
+                          )}
+                        </div>
+                        
+                        <div>
+                          <h3 className="font-semibold">{lesson.title}</h3>
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span>{lesson.duration}</span>
+                            {lesson.completed && (
+                              <Badge variant="secondary" className="text-xs">
+                                Completed
+                              </Badge>
+                            )}
+                            {lesson.locked && (
+                              <Badge variant="outline" className="text-xs">
+                                Locked
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {!lesson.locked && (
+                        <Button 
+                          variant={lesson.completed ? "secondary" : "default"}
+                          size="sm"
+                        >
+                          {lesson.completed ? 'Review' : 'Start'}
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Subject;
