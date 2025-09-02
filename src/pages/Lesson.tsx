@@ -7,11 +7,16 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import Header from "@/components/Header";
+import { useUserProgress } from "@/hooks/useUserProgress";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Lesson = () => {
   const { subjectId, lessonId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { updateProgress } = useUserProgress();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [showResults, setShowResults] = useState(false);
@@ -117,7 +122,7 @@ const Lesson = () => {
   const isLastStep = currentStep === lesson.content.length - 1;
   const progressPercentage = ((currentStep + 1) / lesson.content.length) * 100;
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentContent.type === "quiz") {
       if (!selectedAnswer) return;
       
@@ -127,9 +132,18 @@ const Lesson = () => {
       }
       setShowResults(true);
       
-      setTimeout(() => {
+      setTimeout(async () => {
         if (isLastStep) {
-          // Lesson completed - show completion screen
+          // Lesson completed - save progress
+          if (user && subjectId && lessonId) {
+            try {
+              await updateProgress(subjectId, lessonId, true, score + (isCorrect ? 10 : 0));
+              toast.success("Lesson completed! Next lesson unlocked.");
+            } catch (error) {
+              console.error('Error saving progress:', error);
+              toast.error("Progress saved locally. Please sync when online.");
+            }
+          }
           navigate(`/subject/${subjectId}?completed=${lessonId}`);
         } else {
           setCurrentStep(currentStep + 1);
@@ -139,6 +153,16 @@ const Lesson = () => {
       }, 2000);
     } else {
       if (isLastStep) {
+        // Lesson completed - save progress
+        if (user && subjectId && lessonId) {
+          try {
+            await updateProgress(subjectId, lessonId, true, score);
+            toast.success("Lesson completed! Next lesson unlocked.");
+          } catch (error) {
+            console.error('Error saving progress:', error);
+            toast.error("Progress saved locally. Please sync when online.");
+          }
+        }
         navigate(`/subject/${subjectId}?completed=${lessonId}`);
       } else {
         setCurrentStep(currentStep + 1);

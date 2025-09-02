@@ -5,10 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Header from "@/components/Header";
+import { useUserProgress } from "@/hooks/useUserProgress";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Subject = () => {
   const { subjectId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { isLessonCompleted, isLessonUnlocked, getCompletedLessonsCount, loading } = useUserProgress();
 
   const subjectData = {
     science: {
@@ -64,7 +68,8 @@ const Subject = () => {
     return <div>Subject not found</div>;
   }
 
-  const progressPercentage = (subject.completedLessons / subject.totalLessons) * 100;
+  const completedLessonsCount = user ? getCompletedLessonsCount(subjectId || '') : subject.completedLessons;
+  const progressPercentage = (completedLessonsCount / subject.totalLessons) * 100;
 
   return (
     <div className="min-h-screen bg-background">
@@ -107,7 +112,7 @@ const Subject = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Course Progress</span>
                     <span className="text-sm text-muted-foreground">
-                      {subject.completedLessons}/{subject.totalLessons} lessons completed
+                      {completedLessonsCount}/{subject.totalLessons} lessons completed
                     </span>
                   </div>
                   <Progress value={progressPercentage} className="h-3" />
@@ -118,7 +123,7 @@ const Subject = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <Award className="h-4 w-4" />
-                      <span>{subject.completedLessons * 10} points earned</span>
+                      <span>{completedLessonsCount * 10} points earned</span>
                     </div>
                   </div>
                 </div>
@@ -130,69 +135,79 @@ const Subject = () => {
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold">Lessons</h2>
             <div className="grid gap-4">
-              {subject.lessons.map((lesson) => (
-                <Card 
-                  key={lesson.id} 
-                  className={`transition-all duration-200 ${
-                    lesson.locked 
-                      ? 'opacity-60 cursor-not-allowed' 
-                      : 'hover:shadow-md cursor-pointer'
-                  }`}
-                  onClick={() => {
-                    if (!lesson.locked) {
-                      navigate(`/lesson/${subjectId}/${lesson.id}`);
-                    }
-                  }}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                          lesson.completed 
-                            ? 'bg-success/10 text-success' 
-                            : lesson.locked 
-                              ? 'bg-muted text-muted-foreground'
-                              : 'bg-primary/10 text-primary'
-                        }`}>
-                          {lesson.completed ? (
-                            <CheckCircle className="h-6 w-6" />
-                          ) : lesson.locked ? (
-                            <Lock className="h-6 w-6" />
-                          ) : (
-                            <Play className="h-6 w-6" />
+              {loading ? (
+                <div className="text-center py-8">Loading lessons...</div>
+              ) : (
+                subject.lessons.map((lesson) => {
+                  const lessonId = lesson.id.toString();
+                  const completed = user ? isLessonCompleted(subjectId || '', lessonId) : lesson.completed;
+                  const locked = user ? !isLessonUnlocked(subjectId || '', lessonId) : lesson.locked;
+                  
+                  return (
+                    <Card 
+                      key={lesson.id} 
+                      className={`transition-all duration-200 ${
+                        locked 
+                          ? 'opacity-60 cursor-not-allowed' 
+                          : 'hover:shadow-md cursor-pointer'
+                      }`}
+                      onClick={() => {
+                        if (!locked) {
+                          navigate(`/lesson/${subjectId}/${lesson.id}`);
+                        }
+                      }}
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                              completed 
+                                ? 'bg-success/10 text-success' 
+                                : locked 
+                                  ? 'bg-muted text-muted-foreground'
+                                  : 'bg-primary/10 text-primary'
+                            }`}>
+                              {completed ? (
+                                <CheckCircle className="h-6 w-6" />
+                              ) : locked ? (
+                                <Lock className="h-6 w-6" />
+                              ) : (
+                                <Play className="h-6 w-6" />
+                              )}
+                            </div>
+                            
+                            <div>
+                              <h3 className="font-semibold">{lesson.title}</h3>
+                              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                <span>{lesson.duration}</span>
+                                {completed && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    Completed
+                                  </Badge>
+                                )}
+                                {locked && (
+                                  <Badge variant="outline" className="text-xs">
+                                    Locked
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {!locked && (
+                            <Button 
+                              variant={completed ? "secondary" : "default"}
+                              size="sm"
+                            >
+                              {completed ? 'Review' : 'Start'}
+                            </Button>
                           )}
                         </div>
-                        
-                        <div>
-                          <h3 className="font-semibold">{lesson.title}</h3>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span>{lesson.duration}</span>
-                            {lesson.completed && (
-                              <Badge variant="secondary" className="text-xs">
-                                Completed
-                              </Badge>
-                            )}
-                            {lesson.locked && (
-                              <Badge variant="outline" className="text-xs">
-                                Locked
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {!lesson.locked && (
-                        <Button 
-                          variant={lesson.completed ? "secondary" : "default"}
-                          size="sm"
-                        >
-                          {lesson.completed ? 'Review' : 'Start'}
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                      </CardContent>
+                    </Card>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
