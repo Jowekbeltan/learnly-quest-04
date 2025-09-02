@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import SubjectCard from "@/components/SubjectCard";
@@ -24,6 +25,7 @@ import mathBg from "@/assets/math-bg.jpg";
 import techBg from "@/assets/tech-bg.jpg";
 
 const Index = () => {
+  const { user } = useAuth();
   const [selectedGrade, setSelectedGrade] = useState<number>(12);
 
   const subjects = [
@@ -155,7 +157,8 @@ const Index = () => {
 
               {/* Sidebar */}
               <div className="lg:w-80 space-y-6">
-                <QuickStats />
+                {/* Quick Stats - Only show for authenticated users */}
+                {user && <QuickStats />}
                 
                 {/* Leaderboard */}
                 <Card>
