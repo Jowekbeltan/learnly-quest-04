@@ -82,7 +82,7 @@ const Index = () => {
       color: "hsl(262 83% 68%)"
     },
     {
-      id: "social-studies",
+      id: "socialstudies",
       name: "Social Studies",
       description: "History, Geography, Culture & Society",
       icon: <Globe className="h-6 w-6" />,
@@ -92,7 +92,7 @@ const Index = () => {
       estimatedTime: "8 weeks",
       difficulty: "Beginner" as const,
       points: 280,
-      color: "hsl(158 64% 52%)"
+      color: "hsl(45 86% 58%)"
     }
   ];
 
