@@ -44,6 +44,103 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string | null
+          id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          role: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_reviews: {
+        Row: {
+          content_id: string
+          created_at: string | null
+          feedback: string | null
+          id: string
+          rating: number | null
+          reviewer_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          content_id: string
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          reviewer_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          content_id?: string
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          reviewer_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_reviews_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "teacher_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -51,7 +148,9 @@ export type Database = {
           current_streak: number | null
           display_name: string | null
           id: string
+          last_activity_date: string | null
           level: number | null
+          max_daily_points: number | null
           total_points: number | null
           updated_at: string
           user_id: string
@@ -63,7 +162,9 @@ export type Database = {
           current_streak?: number | null
           display_name?: string | null
           id?: string
+          last_activity_date?: string | null
           level?: number | null
+          max_daily_points?: number | null
           total_points?: number | null
           updated_at?: string
           user_id: string
@@ -75,11 +176,55 @@ export type Database = {
           current_streak?: number | null
           display_name?: string | null
           id?: string
+          last_activity_date?: string | null
           level?: number | null
+          max_daily_points?: number | null
           total_points?: number | null
           updated_at?: string
           user_id?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      teacher_content: {
+        Row: {
+          content: Json
+          created_at: string | null
+          description: string | null
+          difficulty: string | null
+          estimated_duration: number | null
+          id: string
+          status: string | null
+          subject_id: string
+          teacher_id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: Json
+          created_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          estimated_duration?: number | null
+          id?: string
+          status?: string | null
+          subject_id: string
+          teacher_id: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: Json
+          created_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          estimated_duration?: number | null
+          id?: string
+          status?: string | null
+          subject_id?: string
+          teacher_id?: string
+          title?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -148,15 +293,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      user_role: "student" | "teacher" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -283,6 +455,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["student", "teacher", "admin"],
+    },
   },
 } as const
