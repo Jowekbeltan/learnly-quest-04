@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Send, X, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { MessageCircle, Send, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useConversation } from '@11labs/react';
 
 interface Message {
   id: string;
@@ -27,45 +25,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [isVoiceMode, setIsVoiceMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // ElevenLabs Conversation AI
-  const conversation = useConversation({
-    onConnect: () => {
-      setIsVoiceMode(true);
-      toast.success('Voice chat connected!');
-    },
-    onDisconnect: () => {
-      setIsVoiceMode(false);
-      toast.info('Voice chat disconnected');
-    },
-    onMessage: (message) => {
-      if (message.type === 'agent_response') {
-        const newMessage: Message = {
-          id: Date.now().toString(),
-          role: 'assistant',
-          content: message.message,
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, newMessage]);
-        saveMessageToDatabase(newMessage);
-      }
-    },
-    onError: (error) => {
-      console.error('Voice chat error:', error);
-      toast.error('Voice chat error occurred');
-    },
-    overrides: {
-      agent: {
-        prompt: {
-          prompt: `You are a helpful learning assistant for students. You can answer questions about science, mathematics, technology, languages, and social studies. Be encouraging and educational in your responses. Keep answers clear and age-appropriate.`
-        },
-        firstMessage: "Hi! I'm your learning assistant. I can help you with your studies or answer any questions you have. How can I help you today?",
-        language: "en"
-      }
-    }
-  });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -212,28 +172,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
     }
   };
 
-  const startVoiceChat = async () => {
-    try {
-      // Request microphone permission
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      
-      // Note: You'll need to get the agent ID from ElevenLabs dashboard
-      // For now, we'll use a placeholder
-      toast.info('Voice chat requires ElevenLabs agent configuration');
-      
-      // await conversation.startSession({ 
-      //   agentId: 'your-agent-id' // Replace with actual agent ID
-      // });
-    } catch (error) {
-      console.error('Voice chat error:', error);
-      toast.error('Unable to start voice chat');
-    }
-  };
-
-  const stopVoiceChat = async () => {
-    await conversation.endSession();
-  };
-
   return (
     <Card className="w-full max-w-md h-96 flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -242,14 +180,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
           Learning Assistant
         </CardTitle>
         <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={isVoiceMode ? stopVoiceChat : startVoiceChat}
-            className="h-8 w-8 p-0"
-          >
-            {isVoiceMode ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-          </Button>
           {onClose && (
             <Button
               size="sm"
@@ -303,27 +233,18 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
           </div>
         </ScrollArea>
 
-        {isVoiceMode && (
-          <div className="flex items-center justify-center p-2 bg-primary/10 rounded-lg">
-            <Badge variant="secondary" className="flex items-center gap-2">
-              {conversation.isSpeaking ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-              {conversation.isSpeaking ? 'Assistant Speaking' : 'Voice Mode Active'}
-            </Badge>
-          </div>
-        )}
-
         <div className="flex space-x-2">
           <Input
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder={isVoiceMode ? "Voice mode active..." : "Ask me anything about your studies..."}
-            disabled={isLoading || isVoiceMode}
+            placeholder="Ask me anything about your studies..."
+            disabled={isLoading}
             className="flex-1"
           />
           <Button
             onClick={sendMessage}
-            disabled={isLoading || !inputMessage.trim() || isVoiceMode}
+            disabled={isLoading || !inputMessage.trim()}
             size="sm"
           >
             <Send className="h-4 w-4" />
