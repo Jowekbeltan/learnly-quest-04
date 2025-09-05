@@ -28,73 +28,91 @@ const Index = () => {
   const { user } = useAuth();
   const [selectedGrade, setSelectedGrade] = useState<number>(6);
 
-  const subjects = [
-    {
-      id: "science",
-      name: "Science",
-      description: "Physics, Chemistry, Biology & more",
-      icon: <Atom className="h-6 w-6" />,
-      backgroundImage: scienceBg,
-      totalLessons: 45,
-      completedLessons: 23,
-      estimatedTime: "12 weeks",
-      difficulty: "Intermediate" as const,
-      points: 350,
-      color: "hsl(213 94% 68%)"
-    },
-    {
-      id: "mathematics",
-      name: "Mathematics",
-      description: "Algebra, Geometry, Calculus & Statistics",
-      icon: <Calculator className="h-6 w-6" />,
-      backgroundImage: mathBg,
-      totalLessons: 52,
-      completedLessons: 31,
-      estimatedTime: "14 weeks",
-      difficulty: "Advanced" as const,
-      points: 420,
-      color: "hsl(25 95% 53%)"
-    },
-    {
-      id: "technology",
-      name: "Technology",
-      description: "Programming, AI, Robotics & Digital Skills",
-      icon: <Cpu className="h-6 w-6" />,
-      backgroundImage: techBg,
-      totalLessons: 38,
-      completedLessons: 12,
-      estimatedTime: "10 weeks",
-      difficulty: "Intermediate" as const,
-      points: 290,
-      color: "hsl(158 64% 52%)"
-    },
-    {
-      id: "languages",
-      name: "Languages",
-      description: "English, Spanish, French & Communication",
-      icon: <Languages className="h-6 w-6" />,
-      backgroundImage: scienceBg, // Reusing for now
-      totalLessons: 42,
-      completedLessons: 18,
-      estimatedTime: "16 weeks",
-      difficulty: "Beginner" as const,
-      points: 320,
-      color: "hsl(262 83% 68%)"
-    },
-    {
-      id: "socialstudies",
-      name: "Social Studies",
-      description: "History, Geography, Culture & Society",
-      icon: <Globe className="h-6 w-6" />,
-      backgroundImage: mathBg, // Reusing for now
-      totalLessons: 35,
-      completedLessons: 8,
-      estimatedTime: "8 weeks",
-      difficulty: "Beginner" as const,
-      points: 280,
-      color: "hsl(45 86% 58%)"
-    }
-  ];
+  const getGradeSpecificSubjects = (grade: number) => {
+    const baseSubjects = {
+      science: {
+        id: "science",
+        name: "Science",
+        icon: <Atom className="h-6 w-6" />,
+        backgroundImage: scienceBg,
+        color: "hsl(213 94% 68%)"
+      },
+      mathematics: {
+        id: "mathematics", 
+        name: "Mathematics",
+        icon: <Calculator className="h-6 w-6" />,
+        backgroundImage: mathBg,
+        color: "hsl(25 95% 53%)"
+      },
+      technology: {
+        id: "technology",
+        name: "Technology", 
+        icon: <Cpu className="h-6 w-6" />,
+        backgroundImage: techBg,
+        color: "hsl(158 64% 52%)"
+      },
+      languages: {
+        id: "languages",
+        name: "Languages",
+        icon: <Languages className="h-6 w-6" />,
+        backgroundImage: scienceBg,
+        color: "hsl(262 83% 68%)"
+      },
+      socialstudies: {
+        id: "socialstudies", 
+        name: "Social Studies",
+        icon: <Globe className="h-6 w-6" />,
+        backgroundImage: mathBg,
+        color: "hsl(45 86% 58%)"
+      }
+    };
+
+    const gradeContent = {
+      1: [
+        { ...baseSubjects.mathematics, description: "Numbers, Counting & Basic Addition", totalLessons: 20, completedLessons: 8, estimatedTime: "6 weeks", difficulty: "Beginner" as const, points: 150 },
+        { ...baseSubjects.science, description: "Animals, Plants & Weather", totalLessons: 18, completedLessons: 5, estimatedTime: "5 weeks", difficulty: "Beginner" as const, points: 140 },
+        { ...baseSubjects.languages, description: "Reading, Writing & Phonics", totalLessons: 25, completedLessons: 12, estimatedTime: "8 weeks", difficulty: "Beginner" as const, points: 180 }
+      ],
+      2: [
+        { ...baseSubjects.mathematics, description: "Subtraction, Shapes & Time", totalLessons: 25, completedLessons: 10, estimatedTime: "7 weeks", difficulty: "Beginner" as const, points: 200 },
+        { ...baseSubjects.science, description: "Life Cycles, Seasons & Simple Machines", totalLessons: 22, completedLessons: 8, estimatedTime: "6 weeks", difficulty: "Beginner" as const, points: 180 },
+        { ...baseSubjects.languages, description: "Grammar, Vocabulary & Stories", totalLessons: 28, completedLessons: 15, estimatedTime: "9 weeks", difficulty: "Beginner" as const, points: 220 },
+        { ...baseSubjects.socialstudies, description: "Community, Family & Maps", totalLessons: 20, completedLessons: 6, estimatedTime: "5 weeks", difficulty: "Beginner" as const, points: 160 }
+      ],
+      3: [
+        { ...baseSubjects.mathematics, description: "Multiplication, Division & Fractions", totalLessons: 30, completedLessons: 18, estimatedTime: "8 weeks", difficulty: "Intermediate" as const, points: 250 },
+        { ...baseSubjects.science, description: "Forces, Matter & Earth Science", totalLessons: 28, completedLessons: 12, estimatedTime: "7 weeks", difficulty: "Intermediate" as const, points: 230 },
+        { ...baseSubjects.languages, description: "Paragraphs, Research & Presentations", totalLessons: 32, completedLessons: 20, estimatedTime: "10 weeks", difficulty: "Intermediate" as const, points: 270 },
+        { ...baseSubjects.socialstudies, description: "Cultures, Government & Geography", totalLessons: 25, completedLessons: 10, estimatedTime: "6 weeks", difficulty: "Intermediate" as const, points: 210 },
+        { ...baseSubjects.technology, description: "Computer Basics & Digital Citizenship", totalLessons: 20, completedLessons: 5, estimatedTime: "5 weeks", difficulty: "Beginner" as const, points: 180 }
+      ],
+      4: [
+        { ...baseSubjects.mathematics, description: "Decimals, Geometry & Data Analysis", totalLessons: 35, completedLessons: 22, estimatedTime: "9 weeks", difficulty: "Intermediate" as const, points: 300 },
+        { ...baseSubjects.science, description: "Energy, Ecosystems & Human Body", totalLessons: 32, completedLessons: 16, estimatedTime: "8 weeks", difficulty: "Intermediate" as const, points: 280 },
+        { ...baseSubjects.languages, description: "Essays, Literature & Public Speaking", totalLessons: 38, completedLessons: 25, estimatedTime: "12 weeks", difficulty: "Intermediate" as const, points: 320 },
+        { ...baseSubjects.socialstudies, description: "History, Economics & World Regions", totalLessons: 30, completedLessons: 14, estimatedTime: "8 weeks", difficulty: "Intermediate" as const, points: 260 },
+        { ...baseSubjects.technology, description: "Coding Basics, Apps & Internet Safety", totalLessons: 25, completedLessons: 8, estimatedTime: "6 weeks", difficulty: "Intermediate" as const, points: 230 }
+      ],
+      5: [
+        { ...baseSubjects.mathematics, description: "Algebra Basics, Ratios & Probability", totalLessons: 40, completedLessons: 28, estimatedTime: "10 weeks", difficulty: "Intermediate" as const, points: 350 },
+        { ...baseSubjects.science, description: "Chemistry Intro, Space & Scientific Method", totalLessons: 38, completedLessons: 20, estimatedTime: "9 weeks", difficulty: "Intermediate" as const, points: 330 },
+        { ...baseSubjects.languages, description: "Creative Writing, Analysis & Debate", totalLessons: 42, completedLessons: 30, estimatedTime: "14 weeks", difficulty: "Advanced" as const, points: 370 },
+        { ...baseSubjects.socialstudies, description: "World History, Politics & Current Events", totalLessons: 35, completedLessons: 18, estimatedTime: "10 weeks", difficulty: "Intermediate" as const, points: 310 },
+        { ...baseSubjects.technology, description: "Web Design, Robotics & AI Basics", totalLessons: 30, completedLessons: 12, estimatedTime: "8 weeks", difficulty: "Intermediate" as const, points: 280 }
+      ],
+      6: [
+        { ...baseSubjects.mathematics, description: "Advanced Algebra, Geometry & Statistics", totalLessons: 45, completedLessons: 32, estimatedTime: "12 weeks", difficulty: "Advanced" as const, points: 400 },
+        { ...baseSubjects.science, description: "Physics, Chemistry, Biology & Lab Work", totalLessons: 42, completedLessons: 25, estimatedTime: "11 weeks", difficulty: "Advanced" as const, points: 380 },
+        { ...baseSubjects.languages, description: "Advanced Literature, Research & Media", totalLessons: 48, completedLessons: 35, estimatedTime: "16 weeks", difficulty: "Advanced" as const, points: 420 },
+        { ...baseSubjects.socialstudies, description: "Global Studies, Philosophy & Leadership", totalLessons: 40, completedLessons: 22, estimatedTime: "12 weeks", difficulty: "Advanced" as const, points: 360 },
+        { ...baseSubjects.technology, description: "Programming, AI, Robotics & Digital Innovation", totalLessons: 38, completedLessons: 15, estimatedTime: "10 weeks", difficulty: "Advanced" as const, points: 340 }
+      ]
+    };
+
+    return gradeContent[grade as keyof typeof gradeContent] || gradeContent[6];
+  };
+
+  const subjects = getGradeSpecificSubjects(selectedGrade);
 
   const leaderboard = [
     { rank: 1, name: "Emma Chen", points: 2450, avatar: "🏆", streak: 15 },
@@ -140,10 +158,10 @@ const Index = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold">Your Subjects</h2>
-                    <Badge variant="outline" className="text-primary border-primary">
-                      Grade {selectedGrade} • 5 Subjects • 
-                      {selectedGrade >= 5 ? 'Beginner' : selectedGrade >= 3 ? 'Intermediate' : 'Advanced'}
-                    </Badge>
+                     <Badge variant="outline" className="text-primary border-primary">
+                       Grade {selectedGrade} • {subjects.length} Subjects • 
+                       {selectedGrade <= 2 ? 'Beginner' : selectedGrade <= 4 ? 'Intermediate' : 'Advanced'}
+                     </Badge>
                   </div>
                   
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
