@@ -25,7 +25,7 @@ const QuickStats = () => {
     if (user) {
       fetchRecentAchievements();
     }
-  }, [user]);
+  }, [user, profile]);
 
   const fetchRecentAchievements = async () => {
     try {

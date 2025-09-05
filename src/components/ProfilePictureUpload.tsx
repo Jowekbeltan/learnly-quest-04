@@ -79,8 +79,11 @@ const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
         throw updateError;
       }
 
-      // Refresh profile data
+      // Refresh profile data and force re-render
       await refreshProfile();
+      
+      // Force a page reload to ensure avatar updates everywhere
+      window.location.reload();
       
       toast.success('Profile picture updated successfully!');
       
@@ -105,7 +108,11 @@ const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
     <div className="flex flex-col items-center space-y-4">
       <div className="relative">
         <Avatar className="w-24 h-24">
-          <AvatarImage src={previewUrl || currentAvatarUrl} alt="Profile picture" />
+          <AvatarImage 
+            src={previewUrl || currentAvatarUrl} 
+            alt="Profile picture" 
+            className="object-cover"
+          />
           <AvatarFallback>
             <User className="w-12 h-12" />
           </AvatarFallback>
