@@ -26,7 +26,7 @@ import techBg from "@/assets/tech-bg.jpg";
 
 const Index = () => {
   const { user } = useAuth();
-  const [selectedGrade, setSelectedGrade] = useState<number>(12);
+  const [selectedGrade, setSelectedGrade] = useState<number>(6);
 
   const subjects = [
     {
@@ -104,7 +104,7 @@ const Index = () => {
     { rank: 5, name: "David Kim", points: 1180, avatar: "👤", streak: 5 }
   ];
 
-  const gradeOptions = Array.from({ length: 9 }, (_, i) => i + 10);
+  const gradeOptions = Array.from({ length: 6 }, (_, i) => i + 1);
 
   return (
     <div className="min-h-screen bg-background">
@@ -141,7 +141,8 @@ const Index = () => {
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold">Your Subjects</h2>
                     <Badge variant="outline" className="text-primary border-primary">
-                      Grade {selectedGrade} • 5 Subjects
+                      Grade {selectedGrade} • 5 Subjects • 
+                      {selectedGrade >= 5 ? 'Beginner' : selectedGrade >= 3 ? 'Intermediate' : 'Advanced'}
                     </Badge>
                   </div>
                   

@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import ProfilePictureUpload from '@/components/ProfilePictureUpload';
 import TeacherDashboard from '@/components/TeacherDashboard';
+import ThemeSettings from '@/components/ThemeSettings';
 import { 
   ArrowLeft, 
   Trophy, 
@@ -424,6 +425,11 @@ const Profile = () => {
                         </Button>
                       </div>
                     )}
+
+                    <Separator />
+
+                    {/* Theme Settings */}
+                    <ThemeSettings />
 
                     <Separator />
 

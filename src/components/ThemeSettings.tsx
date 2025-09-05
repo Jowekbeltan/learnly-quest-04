@@ -1,0 +1,48 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Sun, Moon, Monitor, Settings } from "lucide-react";
+
+const ThemeSettings = () => {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Settings className="h-5 w-5" />
+          Theme Settings
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <RadioGroup value={theme} onValueChange={setTheme}>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="light" id="light" />
+            <Label htmlFor="light" className="flex items-center gap-2 cursor-pointer">
+              <Sun className="h-4 w-4" />
+              Light
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="dark" id="dark" />
+            <Label htmlFor="dark" className="flex items-center gap-2 cursor-pointer">
+              <Moon className="h-4 w-4" />
+              Dark
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="system" id="system" />
+            <Label htmlFor="system" className="flex items-center gap-2 cursor-pointer">
+              <Monitor className="h-4 w-4" />
+              System
+            </Label>
+          </div>
+        </RadioGroup>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default ThemeSettings;
