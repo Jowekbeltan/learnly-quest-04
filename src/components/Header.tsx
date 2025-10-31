@@ -34,6 +34,9 @@ const Header = () => {
             <Link to="/">
               <Button variant="ghost" size="sm">Dashboard</Button>
             </Link>
+            <Link to="/library">
+              <Button variant="ghost" size="sm">Library</Button>
+            </Link>
             <Button variant="ghost" size="sm">Subjects</Button>
             <Button variant="ghost" size="sm">Leaderboard</Button>
           </nav>
