@@ -11,6 +11,7 @@ import Lesson from "./pages/Lesson";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Library from "./pages/Library";
+import BookReader from "./pages/BookReader";
 import NotFound from "./pages/NotFound";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/library" element={<Library />} />
+            <Route path="/book/:bookId" element={<BookReader />} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/subject/:subjectId" element={<ProtectedRoute><Subject /></ProtectedRoute>} />
             <Route path="/lesson/:subjectId/:lessonId" element={<ProtectedRoute><Lesson /></ProtectedRoute>} />

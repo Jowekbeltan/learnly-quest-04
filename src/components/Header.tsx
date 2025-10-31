@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { User, BookOpen, Trophy, Flame, Settings, LogOut } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
@@ -66,9 +67,12 @@ const Header = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                    <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center">
-                      <User className="h-4 w-4 text-primary-foreground" />
-                    </div>
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={profile?.avatar_url} alt={profile?.display_name || 'User'} />
+                      <AvatarFallback>
+                        <User className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
                     <div className="hidden md:block text-left">
                       <p className="text-sm font-medium">{profile?.display_name || 'User'}</p>
                       <p className="text-xs text-muted-foreground">Student</p>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ interface BookItem {
 }
 
 const Library = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("all");
 
@@ -191,7 +193,10 @@ const Library = () => {
                       <span>{book.pages} pages</span>
                       <Badge variant="outline" className="capitalize">{book.subject}</Badge>
                     </div>
-                    <Button className="w-full">
+                    <Button 
+                      className="w-full"
+                      onClick={() => navigate(`/book/${book.id}`)}
+                    >
                       <BookOpen className="h-4 w-4 mr-2" />
                       Read Book
                     </Button>
