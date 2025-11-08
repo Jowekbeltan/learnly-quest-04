@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Library from "./pages/Library";
 import BookReader from "./pages/BookReader";
+import TeacherLesson from "./pages/TeacherLesson";
 import NotFound from "./pages/NotFound";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/library" element={<Library />} />
             <Route path="/book/:bookId" element={<BookReader />} />
+            <Route path="/teacher-lesson/:lessonId" element={<TeacherLesson />} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/subject/:subjectId" element={<ProtectedRoute><Subject /></ProtectedRoute>} />
             <Route path="/lesson/:subjectId/:lessonId" element={<ProtectedRoute><Lesson /></ProtectedRoute>} />

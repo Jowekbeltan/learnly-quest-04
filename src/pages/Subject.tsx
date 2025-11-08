@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Play, Lock, CheckCircle, Clock, Award } from "lucide-react";
+import { ArrowLeft, Play, Lock, CheckCircle, Clock, Award, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,12 +7,46 @@ import { Progress } from "@/components/ui/progress";
 import Header from "@/components/Header";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { useAuth } from "@/contexts/AuthContext";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface TeacherContent {
+  id: string;
+  title: string;
+  description: string;
+  difficulty: string;
+  estimated_duration: number;
+}
 
 const Subject = () => {
   const { subjectId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isLessonCompleted, isLessonUnlocked, getCompletedLessonsCount, loading } = useUserProgress();
+  const [teacherLessons, setTeacherLessons] = useState<TeacherContent[]>([]);
+  const [loadingTeacher, setLoadingTeacher] = useState(true);
+
+  useEffect(() => {
+    fetchTeacherContent();
+  }, [subjectId]);
+
+  const fetchTeacherContent = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('teacher_content')
+        .select('id, title, description, difficulty, estimated_duration')
+        .eq('subject_id', subjectId)
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setTeacherLessons((data as TeacherContent[]) || []);
+    } catch (error) {
+      console.error('Error fetching teacher content:', error);
+    } finally {
+      setLoadingTeacher(false);
+    }
+  };
 
   const subjectData = {
     science: {
@@ -163,7 +197,7 @@ const Subject = () => {
 
           {/* Lessons */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Lessons</h2>
+            <h2 className="text-2xl font-semibold">Core Lessons</h2>
             <div className="grid gap-4">
               {loading ? (
                 <div className="text-center py-8">Loading lessons...</div>
@@ -240,6 +274,56 @@ const Subject = () => {
               )}
             </div>
           </div>
+
+          {/* Teacher Created Content */}
+          {!loadingTeacher && teacherLessons.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="h-6 w-6 text-primary" />
+                <h2 className="text-2xl font-semibold">Teacher Created Lessons</h2>
+                <Badge variant="secondary">{teacherLessons.length}</Badge>
+              </div>
+              <div className="grid gap-4">
+                {teacherLessons.map((lesson) => (
+                  <Card 
+                    key={lesson.id}
+                    className="hover:shadow-md cursor-pointer transition-all duration-200"
+                    onClick={() => navigate(`/teacher-lesson/${lesson.id}`)}
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-full flex items-center justify-center bg-primary/10 text-primary">
+                            <GraduationCap className="h-6 w-6" />
+                          </div>
+                          
+                          <div className="flex-1">
+                            <h3 className="font-semibold">{lesson.title}</h3>
+                            <p className="text-sm text-muted-foreground line-clamp-1">
+                              {lesson.description}
+                            </p>
+                            <div className="flex items-center gap-3 mt-2">
+                              <Badge variant="outline" className="text-xs capitalize">
+                                {lesson.difficulty}
+                              </Badge>
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {lesson.estimated_duration} min
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <Button size="sm">
+                          Start
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>
