@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { User, BookOpen, Trophy, Flame, Settings, LogOut } from "lucide-react";
+import { User, BookOpen, Trophy, Flame, Settings, LogOut, MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -37,6 +37,12 @@ const Header = () => {
             </Link>
             <Link to="/library">
               <Button variant="ghost" size="sm">Library</Button>
+            </Link>
+            <Link to="/chat">
+              <Button variant="ghost" size="sm">
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Chat
+              </Button>
             </Link>
             <Button variant="ghost" size="sm">Subjects</Button>
             <Button variant="ghost" size="sm">Leaderboard</Button>
