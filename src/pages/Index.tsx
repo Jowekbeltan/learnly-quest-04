@@ -4,9 +4,13 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import SubjectCard from "@/components/SubjectCard";
 import QuickStats from "@/components/QuickStats";
+import Leaderboard from "@/components/Leaderboard";
+import ActiveUsersChart from "@/components/ActiveUsersChart";
+import EducationalVideos from "@/components/EducationalVideos";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Atom, 
   Calculator, 
@@ -16,7 +20,9 @@ import {
   Users,
   Crown,
   Medal,
-  Award
+  Award,
+  Play,
+  BarChart
 } from "lucide-react";
 
 // Import generated images
@@ -113,15 +119,6 @@ const Index = () => {
   };
 
   const subjects = getGradeSpecificSubjects(selectedGrade);
-
-  const leaderboard = [
-    { rank: 1, name: "Emma Chen", points: 2450, avatar: "🏆", streak: 15 },
-    { rank: 2, name: "Marcus Johnson", points: 2380, avatar: "🥈", streak: 12 },
-    { rank: 3, name: "Sofia Rodriguez", points: 2290, avatar: "🥉", streak: 8 },
-    { rank: 4, name: "Alex Thompson", points: 1250, avatar: "👤", streak: 7, isCurrentUser: true },
-    { rank: 5, name: "David Kim", points: 1180, avatar: "👤", streak: 5 }
-  ];
-
   const gradeOptions = Array.from({ length: 6 }, (_, i) => i + 1);
 
   return (
@@ -179,52 +176,34 @@ const Index = () => {
                 {/* Quick Stats - Only show for authenticated users */}
                 {user && <QuickStats />}
                 
-                {/* Leaderboard */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Crown className="h-5 w-5 text-warning" />
-                      Weekly Leaderboard
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {leaderboard.map((user) => (
-                      <div 
-                        key={user.rank}
-                        className={`flex items-center justify-between p-3 rounded-lg ${
-                          user.isCurrentUser 
-                            ? 'bg-primary/10 border border-primary/20' 
-                            : 'bg-muted/50'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg">{user.avatar}</span>
-                            <span className="text-sm font-medium">#{user.rank}</span>
-                          </div>
-                          <div>
-                            <p className={`font-medium text-sm ${user.isCurrentUser ? 'text-primary' : ''}`}>
-                              {user.name} {user.isCurrentUser && '(You)'}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {user.streak} day streak
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold text-sm">{user.points}</p>
-                          <p className="text-xs text-muted-foreground">points</p>
-                        </div>
-                      </div>
-                    ))}
-                    
-                    <Button variant="outline" className="w-full mt-4">
-                      View Full Leaderboard
-                    </Button>
-                  </CardContent>
-                </Card>
+                {/* Community & Activity Tabs */}
+                <Tabs defaultValue="leaderboard" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="leaderboard" className="flex items-center gap-2">
+                      <Crown className="h-4 w-4" />
+                      Leaders
+                    </TabsTrigger>
+                    <TabsTrigger value="activity" className="flex items-center gap-2">
+                      <BarChart className="h-4 w-4" />
+                      Activity
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="leaderboard" className="mt-4">
+                    <Leaderboard />
+                  </TabsContent>
+                  <TabsContent value="activity" className="mt-4">
+                    <ActiveUsersChart />
+                  </TabsContent>
+                </Tabs>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Educational Videos Section */}
+        <section className="py-16 bg-background">
+          <div className="container">
+            <EducationalVideos />
           </div>
         </section>
       </main>
