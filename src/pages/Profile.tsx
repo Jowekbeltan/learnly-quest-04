@@ -413,8 +413,8 @@ const Profile = () => {
 
                     <Separator />
 
-                    {/* Teacher Registration */}
-                    {!isTeacher && (
+                    {/* Teacher Registration / Content Upload */}
+                    {!isTeacher ? (
                       <div className="space-y-3">
                         <h4 className="font-medium">Become a Teacher</h4>
                         <p className="text-sm text-muted-foreground">
@@ -424,6 +424,11 @@ const Profile = () => {
                           <Users className="h-4 w-4 mr-2" />
                           Register as Teacher
                         </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <h4 className="font-medium">Teacher Actions</h4>
+                        <ContentUploadDialog onUploadSuccess={fetchData} />
                       </div>
                     )}
 

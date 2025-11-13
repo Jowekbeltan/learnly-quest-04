@@ -136,12 +136,12 @@ const Library = () => {
 
             {/* Search Bar */}
             <div className="relative max-w-md">
-              <Compass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Compass className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-transform duration-300 ${searchQuery ? 'animate-spin' : ''}`} />
               <Input
                 placeholder="Search books by title or author..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
+                className="pl-10"
               />
             </div>
           </div>

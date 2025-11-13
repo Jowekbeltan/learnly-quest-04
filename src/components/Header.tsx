@@ -44,8 +44,10 @@ const Header = () => {
                 Chat
               </Button>
             </Link>
-            <Button variant="ghost" size="sm">Subjects</Button>
-            <Button variant="ghost" size="sm">Leaderboard</Button>
+              <Button variant="ghost" size="sm">
+                <Link to="/teacher-content" className="w-full">Teacher Content</Link>
+              </Button>
+              <Button variant="ghost" size="sm">Leaderboard</Button>
           </nav>
         </div>
 
