@@ -14,6 +14,7 @@ import Header from '@/components/Header';
 import ProfilePictureUpload from '@/components/ProfilePictureUpload';
 import TeacherDashboard from '@/components/TeacherDashboard';
 import ThemeSettings from '@/components/ThemeSettings';
+import { ContentUploadDialog } from '@/components/ContentUploadDialog';
 import { 
   ArrowLeft, 
   Trophy, 
