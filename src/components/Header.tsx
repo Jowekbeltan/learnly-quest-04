@@ -23,7 +23,7 @@ const Header = () => {
   const fetchUnreadCount = async () => {
     try {
       const { count, error } = await supabase
-        .from("notifications")
+        .from("notifications" as any)
         .select("*", { count: "exact", head: true })
         .eq("read", false);
 
@@ -38,7 +38,7 @@ const Header = () => {
     const channel = supabase
       .channel("notifications-updates")
       .on(
-        "postgres_changes",
+        "postgres_changes" as any,
         {
           event: "*",
           schema: "public",
@@ -154,9 +154,11 @@ const Header = () => {
                       View Profile
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="h-4 w-4 mr-2" />
-                    Settings
+                  <DropdownMenuItem asChild>
+                    <Link to="/settings" className="w-full">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="h-4 w-4 mr-2" />
