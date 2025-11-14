@@ -17,6 +17,7 @@ import Chat from "./pages/Chat";
 import TeacherContent from "./pages/TeacherContent";
 import ChatRoom from "./pages/ChatRoom";
 import Notifications from "./pages/Notifications";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
             <Route path="/chat/:conversationId" element={<ProtectedRoute><ChatRoom /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/subject/:subjectId" element={<ProtectedRoute><Subject /></ProtectedRoute>} />
             <Route path="/lesson/:subjectId/:lessonId" element={<ProtectedRoute><Lesson /></ProtectedRoute>} />

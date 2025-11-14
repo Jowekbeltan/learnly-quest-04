@@ -37,12 +37,12 @@ const Notifications = () => {
   const fetchNotifications = async () => {
     try {
       const { data, error } = await supabase
-        .from("notifications")
+        .from("notifications" as any)
         .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setNotifications(data || []);
+      setNotifications((data || []) as unknown as Notification[]);
     } catch (error) {
       console.error("Error fetching notifications:", error);
       toast({
@@ -59,7 +59,7 @@ const Notifications = () => {
     const channel = supabase
       .channel("notifications-changes")
       .on(
-        "postgres_changes",
+        "postgres_changes" as any,
         {
           event: "*",
           schema: "public",
@@ -80,8 +80,8 @@ const Notifications = () => {
   const markAsRead = async (id: string) => {
     try {
       const { error } = await supabase
-        .from("notifications")
-        .update({ read: true })
+        .from("notifications" as any)
+        .update({ read: true } as any)
         .eq("id", id);
 
       if (error) throw error;
@@ -97,8 +97,8 @@ const Notifications = () => {
   const markAllAsRead = async () => {
     try {
       const { error } = await supabase
-        .from("notifications")
-        .update({ read: true })
+        .from("notifications" as any)
+        .update({ read: true } as any)
         .eq("read", false);
 
       if (error) throw error;
