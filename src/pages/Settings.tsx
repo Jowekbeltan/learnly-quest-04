@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -54,6 +54,89 @@ const Settings = () => {
   const [shareProgress, setShareProgress] = useState(true);
   const [showProfile, setShowProfile] = useState(true);
   const [twoFactorAuth, setTwoFactorAuth] = useState(false);
+
+  // Load preferences on mount
+  useEffect(() => {
+    if (user) {
+      loadPreferences();
+    }
+  }, [user]);
+
+  const loadPreferences = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("user_preferences" as any)
+        .select("*")
+        .eq("user_id", user?.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        const prefs = data as any;
+        setEmailNotifications(prefs.email_notifications);
+        setPushNotifications(prefs.push_notifications);
+        setAchievementAlerts(prefs.achievement_alerts);
+        setLessonReminders(prefs.lesson_reminders);
+        setShareProgress(prefs.share_progress);
+        setShowProfile(prefs.show_profile);
+        setTwoFactorAuth(prefs.two_factor_auth);
+        setLanguage(prefs.language);
+        setVibration(prefs.vibration);
+      } else {
+        // Create default preferences if none exist
+        await createDefaultPreferences();
+      }
+    } catch (error) {
+      console.error("Error loading preferences:", error);
+    }
+  };
+
+  const createDefaultPreferences = async () => {
+    try {
+      const { error } = await supabase
+        .from("user_preferences" as any)
+        .insert({
+          user_id: user?.id,
+          email_notifications: true,
+          push_notifications: true,
+          achievement_alerts: true,
+          lesson_reminders: true,
+          share_progress: true,
+          show_profile: true,
+          two_factor_auth: false,
+          language: "en",
+          vibration: true,
+        } as any);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error creating default preferences:", error);
+    }
+  };
+
+  const updatePreference = async (field: string, value: any) => {
+    try {
+      const { error } = await supabase
+        .from("user_preferences" as any)
+        .update({ [field]: value } as any)
+        .eq("user_id", user?.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Saved",
+        description: "Preference updated successfully",
+      });
+    } catch (error) {
+      console.error("Error updating preference:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save preference",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleUpdateProfile = async () => {
     try {
@@ -265,7 +348,10 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={emailNotifications}
-                      onCheckedChange={setEmailNotifications}
+                      onCheckedChange={(value) => {
+                        setEmailNotifications(value);
+                        updatePreference("email_notifications", value);
+                      }}
                     />
                   </div>
                   <Separator />
@@ -276,7 +362,10 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={pushNotifications}
-                      onCheckedChange={setPushNotifications}
+                      onCheckedChange={(value) => {
+                        setPushNotifications(value);
+                        updatePreference("push_notifications", value);
+                      }}
                     />
                   </div>
                   <Separator />
@@ -287,7 +376,10 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={achievementAlerts}
-                      onCheckedChange={setAchievementAlerts}
+                      onCheckedChange={(value) => {
+                        setAchievementAlerts(value);
+                        updatePreference("achievement_alerts", value);
+                      }}
                     />
                   </div>
                   <Separator />
@@ -298,7 +390,10 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={lessonReminders}
-                      onCheckedChange={setLessonReminders}
+                      onCheckedChange={(value) => {
+                        setLessonReminders(value);
+                        updatePreference("lesson_reminders", value);
+                      }}
                     />
                   </div>
                 </CardContent>
@@ -374,7 +469,10 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={shareProgress}
-                      onCheckedChange={setShareProgress}
+                      onCheckedChange={(value) => {
+                        setShareProgress(value);
+                        updatePreference("share_progress", value);
+                      }}
                     />
                   </div>
                   <Separator />
@@ -385,7 +483,10 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={showProfile}
-                      onCheckedChange={setShowProfile}
+                      onCheckedChange={(value) => {
+                        setShowProfile(value);
+                        updatePreference("show_profile", value);
+                      }}
                     />
                   </div>
                   <Separator />
@@ -396,7 +497,10 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={twoFactorAuth}
-                      onCheckedChange={setTwoFactorAuth}
+                      onCheckedChange={(value) => {
+                        setTwoFactorAuth(value);
+                        updatePreference("two_factor_auth", value);
+                      }}
                     />
                   </div>
                 </CardContent>
@@ -413,7 +517,13 @@ const Settings = () => {
                 <CardContent className="space-y-6">
                   <div className="space-y-2">
                     <Label>Language</Label>
-                    <Select value={language} onValueChange={setLanguage}>
+                    <Select 
+                      value={language} 
+                      onValueChange={(value) => {
+                        setLanguage(value);
+                        updatePreference("language", value);
+                      }}
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -433,7 +543,10 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={vibration}
-                      onCheckedChange={setVibration}
+                      onCheckedChange={(value) => {
+                        setVibration(value);
+                        updatePreference("vibration", value);
+                      }}
                     />
                   </div>
                 </CardContent>
