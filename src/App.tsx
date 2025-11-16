@@ -6,19 +6,22 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Index from "./pages/Index";
-import Subject from "./pages/Subject";
-import Lesson from "./pages/Lesson";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import Subject from "./pages/Subject";
+import Lesson from "./pages/Lesson";
+import NotFound from "./pages/NotFound";
+import Settings from "./pages/Settings";
 import Library from "./pages/Library";
 import BookReader from "./pages/BookReader";
-import TeacherLesson from "./pages/TeacherLesson";
 import Chat from "./pages/Chat";
-import TeacherContent from "./pages/TeacherContent";
 import ChatRoom from "./pages/ChatRoom";
 import Notifications from "./pages/Notifications";
-import Settings from "./pages/Settings";
-import NotFound from "./pages/NotFound";
+import TeacherContent from "./pages/TeacherContent";
+import TeacherLesson from "./pages/TeacherLesson";
+import Videos from "./pages/Videos";
+import Downloads from "./pages/Downloads";
+import Leaderboard from "./pages/Leaderboard";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -43,9 +46,11 @@ const App = () => (
             <Route path="/chat/:conversationId" element={<ProtectedRoute><ChatRoom /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/subject/:subjectId" element={<ProtectedRoute><Subject /></ProtectedRoute>} />
             <Route path="/lesson/:subjectId/:lessonId" element={<ProtectedRoute><Lesson /></ProtectedRoute>} />
+            <Route path="/videos" element={<ProtectedRoute><Videos /></ProtectedRoute>} />
+            <Route path="/downloads" element={<ProtectedRoute><Downloads /></ProtectedRoute>} />
+            <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

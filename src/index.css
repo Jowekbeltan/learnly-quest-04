@@ -125,4 +125,17 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Text size preferences */
+  html.text-sm body {
+    font-size: 0.875rem;
+  }
+
+  html.text-base body {
+    font-size: 1rem;
+  }
+
+  html.text-lg body {
+    font-size: 1.125rem;
+  }
 }
