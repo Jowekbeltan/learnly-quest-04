@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { User, BookOpen, Trophy, Flame, Settings, LogOut, MessageCircle, Bell } from "lucide-react";
+import { User, BookOpen, Trophy, Flame, Settings, LogOut, MessageCircle, Bell, Menu, Download, Video } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -68,6 +68,63 @@ const Header = () => {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="px-2">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48 bg-popover z-50">
+                <DropdownMenuItem asChild>
+                  <Link to="/" className="w-full">
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/library" className="w-full">
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    Library
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/chat" className="w-full">
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Chat
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/teacher-content" className="w-full">
+                    <User className="h-4 w-4 mr-2" />
+                    Teacher Content
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/leaderboard" className="w-full">
+                    <Trophy className="h-4 w-4 mr-2" />
+                    Leaderboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/downloads" className="w-full">
+                    <Download className="h-4 w-4 mr-2" />
+                    Downloads
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/videos" className="w-full">
+                    <Video className="h-4 w-4 mr-2" />
+                    Educational Videos
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/notifications" className="w-full">
+                    <Bell className="h-4 w-4 mr-2" />
+                    Notifications
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <div className="h-8 w-8 bg-hero-gradient rounded-lg flex items-center justify-center">
               <BookOpen className="h-5 w-5 text-white" />
             </div>

@@ -49,6 +49,7 @@ const Settings = () => {
   // General Preferences
   const [language, setLanguage] = useState("en");
   const [vibration, setVibration] = useState(true);
+  const [textSize, setTextSize] = useState("medium");
 
   // Privacy Settings
   const [shareProgress, setShareProgress] = useState(true);
@@ -83,6 +84,14 @@ const Settings = () => {
         setTwoFactorAuth(prefs.two_factor_auth);
         setLanguage(prefs.language);
         setVibration(prefs.vibration);
+        
+        // Apply text size from preferences
+        const savedTextSize = localStorage.getItem("textSize") || "medium";
+        setTextSize(savedTextSize);
+        applyTextSize(savedTextSize);
+        
+        // Apply language
+        document.documentElement.lang = prefs.language;
       } else {
         // Create default preferences if none exist
         await createDefaultPreferences();
@@ -162,6 +171,40 @@ const Settings = () => {
     }
   };
 
+  const applyTextSize = (size: string) => {
+    const root = document.documentElement;
+    root.classList.remove("text-sm", "text-base", "text-lg");
+    
+    switch (size) {
+      case "small":
+        root.classList.add("text-sm");
+        break;
+      case "large":
+        root.classList.add("text-lg");
+        break;
+      default:
+        root.classList.add("text-base");
+    }
+  };
+
+  const handleTextSizeChange = (size: string) => {
+    setTextSize(size);
+    localStorage.setItem("textSize", size);
+    applyTextSize(size);
+    
+    toast({
+      title: "Text size updated",
+      description: "Your text size preference has been saved",
+    });
+  };
+
+  const handleLanguageChange = async (newLanguage: string) => {
+    setLanguage(newLanguage);
+    document.documentElement.lang = newLanguage;
+    
+    await updatePreference("language", newLanguage);
+  };
+
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
       toast({
@@ -188,19 +231,17 @@ const Settings = () => {
 
       if (error) throw error;
 
-      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-
       toast({
         title: "Success",
-        description: "Password changed successfully",
+        description: "Password updated successfully",
       });
     } catch (error) {
-      console.error("Error changing password:", error);
+      console.error("Error updating password:", error);
       toast({
         title: "Error",
-        description: "Failed to change password",
+        description: "Failed to update password",
         variant: "destructive",
       });
     }
@@ -439,7 +480,7 @@ const Settings = () => {
                   <Separator />
                   <div className="space-y-2">
                     <Label>Text Size</Label>
-                    <Select defaultValue="medium">
+                    <Select value={textSize} onValueChange={handleTextSizeChange}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
